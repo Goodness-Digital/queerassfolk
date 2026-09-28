@@ -5,6 +5,12 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# A live-edit publish is a push; two in quick succession must deploy in order,
+# never cancel each other.
+concurrency:
+  group: pages-${{ github.ref_name }}
+  cancel-in-progress: false
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
