@@ -30,10 +30,12 @@ function parseCalendar(html) {
   return out;
 }
 
+// Falls back to the calendar's own fields, flagged so the health check can see it
 async function eventDetail(base) {
+  const fallback = { ...base, detail: false };
   try {
     const r = await fetch(base.url, { headers: UA });
-    if (!r.ok) return base;
+    if (!r.ok) return fallback;
     const html = await r.text();
     for (const [, json] of html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) {
       let data; try { data = JSON.parse(json); } catch { continue; }
@@ -49,28 +51,40 @@ async function eventDetail(base) {
         town: text(loc.address && loc.address.addressLocality),
         soldOut: avail.length > 0 && avail.every(a => /SoldOut/i.test(a)),
         cancelled: /Cancelled/i.test(ev.eventStatus || ''),
+        detail: true,
       };
     }
   } catch {}
-  return base;
+  return fallback;
 }
 
 async function load() {
   const r = await fetch(CALENDAR, { headers: UA });
-  if (!r.ok) throw new Error('calendar ' + r.status);
-  const seen = new Set();
-  const base = parseCalendar(await r.text()).filter(s => !seen.has(s.url) && seen.add(s.url)).slice(0, MAX);
+  if (!r.ok) throw new Error('calendar returned ' + r.status);
+  const html = await r.text();
+  const parsed = parseCalendar(html), seen = new Set();
+  const base = parsed.filter(s => !seen.has(s.url) && seen.add(s.url)).slice(0, MAX);
+  // Dates on the calendar that the regex didn't pick up mean OutSavvy changed its markup
+  const listed = (html.match(/class='dategroup/g) || []).length;
   const shows = await Promise.all(base.map(eventDetail));
-  return shows.filter(s => !s.cancelled).sort((a, b) => new Date(a.start) - new Date(b.start));
+  const errors = [];
+  if (listed > parsed.length) errors.push(`calendar lists ${listed} dates, parsed ${parsed.length}`);
+  for (const s of shows) if (!s.detail) errors.push(`no event data on ${s.url}`);
+  for (const s of shows) delete s.detail;
+  return {
+    shows: shows.filter(s => !s.cancelled).sort((a, b) => new Date(a.start) - new Date(b.start)),
+    errors,
+  };
 }
 
 export async function onRequestGet({ request, waitUntil }) {
-  const cache = caches.default, key = new Request(new URL('/api/shows?v=2', request.url));
+  const cache = caches.default, key = new Request(new URL('/api/shows?v=3', request.url));
   const hit = await cache.match(key);
   if (hit) return hit;
-  let shows = [], ok = true;
-  try { shows = await load(); } catch { ok = false; }
-  const res = new Response(JSON.stringify({ ok, shows }), {
+  let shows = [], errors = [], ok = true;
+  try { ({ shows, errors } = await load()); } catch (e) { ok = false; errors = [String(e && e.message || e)]; }
+  // errors is read by the flatf health check (qaf_shows_check.sh), not the page
+  const res = new Response(JSON.stringify({ ok, shows, errors }), {
     headers: { 'content-type': 'application/json', 'cache-control': `public, max-age=${ok ? TTL : 300}` },
   });
   waitUntil(cache.put(key, res.clone()));
