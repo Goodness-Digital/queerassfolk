@@ -123,6 +123,8 @@
     .ev-info h3{margin:0;font-family:var(--anton);font-weight:400;text-transform:uppercase;font-size:clamp(22px,2.6vw,38px);line-height:1}
     .ev-info p{margin:0;font-size:15px;opacity:.8}
     .event-list .btn{font-size:14px;padding:12px 18px}
+    .event-list .btn[aria-disabled="true"]{background:transparent;color:var(--brown);border:1px solid var(--brown)}
+    .ev-empty{margin:calc(-1 * clamp(28px,4vw,48px)) 0 0;padding:clamp(20px,2.5vw,32px) 0;border-bottom:1px solid var(--brown);font-size:clamp(16px,1.3vw,19px)}
     @media (max-width:520px){.event-list li{grid-template-columns:minmax(64px,auto) minmax(0,1fr)}.event-list .btn{grid-column:2;justify-self:start}}
     .photos{list-style:none;margin:clamp(40px,6vw,88px) 0 0;padding:0 clamp(8px,3vw,48px) 40px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:clamp(28px,4vw,64px);align-items:start}
     .photos li{--r:-3deg;--y:0px;--lift:0px;--s:1;--tr:-4deg;position:relative;transform:translateY(calc(var(--y) + var(--lift))) rotate(var(--r)) scale(var(--s));transition:transform .6s cubic-bezier(.3,1.7,.5,1),opacity .4s}
@@ -261,16 +263,8 @@
         <p>Upcoming shows</p>
         <a href="https://www.outsavvy.com/calendar/4084" target="_blank" rel="noopener noreferrer">All dates on OutSavvy ↗</a>
       </div>
-      <ol class="event-list">
-        <li>
-          <div class="ev-date"><span class="ev-day">24</span><span class="ev-mon">Oct · Sat</span></div>
-          <div class="ev-info">
-            <h3>Live music from Calypso, Bobo Rose, Tygermylk</h3>
-            <p>The Stade Hall, Hastings · 8pm</p>
-          </div>
-          <a class="btn btn-brown" href="https://www.outsavvy.com/event/39705/queer-ass-folk-live-music-from-calypso-bobo-rose-tygermylk" target="_blank" rel="noopener noreferrer">Tickets</a>
-        </li>
-      </ol>
+      <ol class="event-list" id="event-list" aria-live="polite"></ol>
+      <p class="ev-empty" id="ev-empty" hidden>New dates are on their way. <a href="https://www.outsavvy.com/calendar/4084" target="_blank" rel="noopener noreferrer">Check OutSavvy</a> for the latest.</p>
       <ul class="photos">
         <li style="--c:var(--cyan)"><figure><img src="images/QAF-Stade-24-LL-11-p-1080.jpg" alt="A performer with a silver hollow-body guitar laughing into the microphone" loading="lazy" width="1080" height="1350"><figcaption>The Stade, 2024</figcaption></figure></li>
         <li style="--c:var(--orange)"><figure><img src="images/24.07.05_QUEER-ASS-FOLK_ALICE-DENNY_018-p-1080.jpg" alt="The audience watching a set in a dim room at Queer Ass Folk, July 2024" loading="lazy" width="1080" height="1350"><figcaption>July 2024</figcaption></figure></li>
@@ -397,17 +391,37 @@
     btn.addEventListener('focus', on); btn.addEventListener('blur', off);
   });
 
-  // Countdown to the next show, from OutSavvy via /api/shows; stays hidden if that fails
-  const cd = document.getElementById('countdown');
-  fetch('/api/shows').then(r => r.ok ? r.json() : { shows: [] }).then(({ shows }) => {
-    const show = shows.find(s => new Date(s.start) > Date.now() - 4 * 3600e3);
+  // Gig list and countdown, both from OutSavvy via /api/shows
+  const cd = document.getElementById('countdown'), list = document.getElementById('event-list');
+  const LDN = { timeZone: 'Europe/London' };
+  const part = (d, o) => d.toLocaleString('en-GB', { ...LDN, ...o });
+  const row = s => {
+    const d = new Date(s.start), li = document.createElement('li');
+    const mins = part(d, { minute: '2-digit' }).padStart(2, '0');
+    const time = part(d, { hour: 'numeric', hour12: true }).replace(/\s?([ap]m)/i, (mins === '00' ? '' : ':' + mins) + '$1').toLowerCase();
+    const where = [s.venue, s.town].filter(Boolean).filter((x, i, a) => !(i && a[0].includes(x))).join(', ');
+    li.innerHTML = `<div class="ev-date"><span class="ev-day"></span><span class="ev-mon"></span></div><div class="ev-info"><h3></h3><p></p></div><a class="btn btn-brown" target="_blank" rel="noopener noreferrer"></a>`;
+    li.querySelector('.ev-day').textContent = part(d, { day: 'numeric' });
+    li.querySelector('.ev-mon').textContent = part(d, { month: 'short' }) + ' · ' + part(d, { weekday: 'short' });
+    li.querySelector('h3').textContent = s.title;
+    li.querySelector('p').textContent = [where, time].filter(Boolean).join(' · ');
+    const a = li.querySelector('a'); a.href = s.url;
+    a.textContent = s.soldOut ? 'Sold out' : 'Tickets';
+    if (s.soldOut) a.setAttribute('aria-disabled', 'true');
+    return li;
+  };
+  fetch('/api/shows').then(r => r.ok ? r.json() : { shows: [] }).catch(() => ({ shows: [] })).then(({ shows }) => {
+    const upcoming = shows.filter(s => new Date(s.start) > Date.now() - 4 * 3600e3);
+    upcoming.forEach(s => list.appendChild(row(s)));
+    document.getElementById('ev-empty').hidden = upcoming.length > 0;
+    const show = upcoming[0];
     if (!show) return;
     const next = new Date(show.start), day = d => new Date(d.getFullYear(), d.getMonth(), d.getDate());
     const n = Math.round((day(next) - day(new Date())) / 864e5);
     document.getElementById('cd-date').textContent = next.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'Europe/London' });
     document.getElementById('cd-left').textContent = n <= 0 ? 'tonight' : n === 1 ? 'tomorrow' : n + ' days';
     cd.hidden = false;
-  }).catch(() => {});
+  });
 
   // Polaroids drop onto the wall one after another
   const photos = document.querySelector('.photos');
