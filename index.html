@@ -47,6 +47,7 @@
     .btn-brown{background:var(--brown);color:var(--cream)}
     .btn-brown:hover{background:var(--green);color:var(--brown)}
 
+    body::after{content:'';position:fixed;inset:0;z-index:40;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .15 0 0 0 0 .06 0 0 0 0 .01 0 0 0 -1.6 1.15'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:220px;opacity:.5}
     .skip{position:absolute;left:-9999px;top:8px;z-index:50;background:var(--brown);color:var(--cream);padding:8px 12px;border-radius:6px}
     .skip:focus{left:8px;color:var(--cream)}
 
@@ -61,6 +62,15 @@
     .nav a:hover,.nav a[aria-current="true"]{opacity:1}
     .nav-hl{position:absolute;top:0;left:0;width:0;height:0;border:1px solid var(--brown);border-radius:8px;pointer-events:none;transition:transform .5s var(--ease),width .5s var(--ease),height .5s var(--ease)}
     .tickets-cta{font-size:13px;padding:10px 16px}
+    .header-right{display:flex;align-items:center;gap:8px}
+    .countdown{display:flex;align-items:center;gap:8px;background:var(--cream);color:var(--brown);text-decoration:none;border-radius:8px;padding:9px 12px;font-size:13px;font-weight:500;box-shadow:0 1px 0 #270f0314;white-space:nowrap}
+    .countdown[hidden]{display:none}
+    .countdown b{font-weight:600}
+    .countdown i{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 #69e05f99;animation:pulse 1.8s ease-out infinite}
+    @keyframes pulse{to{box-shadow:0 0 0 8px #69e05f00}}
+    @media (max-width:900px){.countdown .cd-long{display:none}}
+    @media (max-width:420px){.countdown{display:none}}
+    @media (prefers-reduced-motion:reduce){.countdown i{animation:none}}
     @media (max-width:560px){.nav{display:none}}
 
     /* Hero */
@@ -97,7 +107,13 @@
     .events-head p{margin:0;font-size:clamp(16px,1.3vw,19px);font-weight:500}
     .events-head a{font-size:14px;font-weight:500}
     .event-list{list-style:none;margin:0;padding:0;border-top:1px solid var(--brown)}
-    .event-list li{display:grid;grid-template-columns:minmax(72px,110px) minmax(0,1fr) auto;align-items:center;gap:clamp(12px,3vw,40px);padding:clamp(16px,2vw,24px) 0;border-bottom:1px solid var(--brown)}
+    .event-list li{position:relative;isolation:isolate;display:grid;grid-template-columns:minmax(72px,110px) minmax(0,1fr) auto;align-items:center;gap:clamp(12px,3vw,40px);padding:clamp(16px,2vw,24px) 0;border-bottom:1px solid var(--brown)}
+    .event-list li::before{content:'';position:absolute;z-index:-1;inset:-1px calc(-1 * var(--side));background:var(--green);transform:scaleX(0);transform-origin:left;transition:transform .55s var(--ease)}
+    .event-list li:hover::before,.event-list li:focus-within::before{transform:scaleX(1)}
+    .event-list li > *{transition:transform .55s var(--ease)}
+    .event-list li:hover .ev-date,.event-list li:focus-within .ev-date{transform:translateX(10px) rotate(-4deg)}
+    .event-list li:hover .ev-info,.event-list li:focus-within .ev-info{transform:translateX(10px)}
+    .event-list li:hover .btn,.event-list li:focus-within .btn{transform:scale(1.06)}
     .ev-date{display:flex;flex-direction:column;align-items:flex-start;line-height:1}
     .ev-day{font-family:var(--anton);font-size:clamp(40px,5vw,72px);line-height:.9}
     .ev-mon{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-top:6px}
@@ -161,7 +177,13 @@
     .pills{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:10px}
     .pills a{display:block;color:var(--cream);text-decoration:none;border:1px solid #ffe9cf66;padding:10px 16px;border-radius:8px;font-size:14px;font-weight:500;transition:background-color .2s,color .2s}
     .pills a:hover{background:var(--cream);color:var(--brown)}
-    .footer-banner{width:100%;aspect-ratio:2048/630;background-color:var(--cream);-webkit-mask:url('images/Banner2-p-1080.png') center/contain no-repeat;mask:url('images/Banner2-p-1080.png') center/contain no-repeat}
+    .frogs{position:relative}
+    .footer-banner{width:100%;aspect-ratio:3792/1223;background-color:var(--cream);-webkit-mask:url('images/Banner2-p-1080.png') center/contain no-repeat;mask:url('images/Banner2-p-1080.png') center/contain no-repeat}
+    .frog-glow{position:absolute;inset:0;background-color:var(--c);opacity:0;cursor:pointer;-webkit-mask:url('images/Banner2-p-1080.png') center/contain no-repeat;mask:url('images/Banner2-p-1080.png') center/contain no-repeat;transition:opacity .35s var(--ease);-webkit-tap-highlight-color:transparent}
+    .frog-glow.is-on{opacity:1;animation:frog-play .42s cubic-bezier(.3,1.6,.5,1) infinite alternate}
+    @keyframes frog-play{from{transform:translate(0,0) rotate(0)}to{transform:translate(-.25%,-1.4%) rotate(-.6deg)}}
+    .note{position:absolute;z-index:2;pointer-events:none;font-family:'Segoe UI Symbol','Noto Sans Symbols','Apple Symbols',sans-serif;line-height:1;will-change:transform,opacity}
+    @media (prefers-reduced-motion:reduce){.frog-glow.is-on{animation:none}}
     .footer-bar{display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;border-top:1px solid #ffe9cf4d;padding-top:20px;font-size:13px}
     .footer-bar ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:20px}
     .footer-bar ul a{color:var(--cream);text-decoration:none;opacity:.8}
@@ -190,7 +212,10 @@
       <li><a href="#contact">Contact</a></li>
     </ul>
   </nav>
-  <a class="btn btn-green tickets-cta" href="#events" data-hero-cta="#69e05f">Get tickets</a>
+  <div class="header-right">
+    <a class="countdown" id="countdown" href="#events" hidden><i aria-hidden="true"></i><span><span class="cd-long">Next show </span><b id="cd-date"></b> · <span id="cd-left"></span></span></a>
+    <a class="btn btn-green tickets-cta" href="#events" data-hero-cta="#69e05f">Get tickets</a>
+  </div>
 </header>
 
 <main id="main">
@@ -226,7 +251,7 @@
         <a href="https://www.outsavvy.com/calendar/4084" target="_blank" rel="noopener noreferrer">All dates on OutSavvy ↗</a>
       </div>
       <ol class="event-list">
-        <li>
+        <li data-start="2026-10-24T20:00:00+01:00">
           <div class="ev-date"><span class="ev-day">24</span><span class="ev-mon">Oct · Sat</span></div>
           <div class="ev-info">
             <h3>Live music from Calypso, Bobo Rose, Tygermylk</h3>
@@ -312,7 +337,12 @@
         <li><a href="https://drive.google.com/drive/folders/1FuZu6qhzVQH_gHqKHHOGjCw7GQgPflWI" target="_blank" rel="noopener noreferrer">Press kit ↗</a></li>
       </ul>
     </div>
-    <div class="footer-banner" role="img" aria-label="Queer Ass Folk banner: three frogs playing flute, accordion and guitar"></div>
+    <div class="frogs">
+      <div class="footer-banner" role="img" aria-label="Queer Ass Folk banner: three frogs playing flute, accordion and guitar"></div>
+      <span class="frog-glow" aria-hidden="true" data-x="6.6" data-y="27.0" style="--c:var(--green);clip-path:polygon(10.5% 1.6%,15.8% 1.6%,20.6% 14.7%,20.6% 38.4%,15.8% 40.0%,12.9% 43.3%,12.7% 66.2%,6.1% 66.2%,6.1% 38.4%,5.3% 24.5%)"></span>
+      <span class="frog-glow" aria-hidden="true" data-x="54.9" data-y="33.5" style="--c:var(--cyan);clip-path:polygon(47.7% 23.7%,60.7% 23.7%,61.4% 49.0%,57.2% 57.2%,56.7% 79.2%,47.2% 79.2%,46.4% 49.0%)"></span>
+      <span class="frog-glow" aria-hidden="true" data-x="94.4" data-y="15.5" style="--c:var(--orange);clip-path:polygon(79.9% 2.5%,95.2% 2.5%,95.7% 42.5%,93.1% 74.3%,87.3% 74.3%,84.1% 54.7%,79.9% 53.1%)"></span>
+    </div>
     <div class="footer-bar">
       <ul>
         <li><a href="#home">Home</a></li>
@@ -354,6 +384,37 @@
     const off = () => heroBox.classList.remove('is-hot');
     if (canHover) { btn.addEventListener('mouseenter', on); btn.addEventListener('mouseleave', off); }
     btn.addEventListener('focus', on); btn.addEventListener('blur', off);
+  });
+
+  // Countdown to the next show, read off the first upcoming row
+  const cd = document.getElementById('countdown');
+  const next = [...document.querySelectorAll('.event-list li[data-start]')].map(li => new Date(li.dataset.start)).filter(d => d > Date.now() - 4 * 3600e3)[0];
+  if (next) {
+    const day = d => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    const n = Math.round((day(next) - day(new Date())) / 864e5);
+    document.getElementById('cd-date').textContent = next.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'Europe/London' });
+    document.getElementById('cd-left').textContent = n <= 0 ? 'tonight' : n === 1 ? 'tomorrow' : n + ' days';
+    cd.hidden = false;
+  }
+
+  // Frogs play: light up in colour, bounce, and send notes up off the instrument
+  const NOTES = ['♪', '♫', '♩', '♬'];
+  document.querySelectorAll('.frog-glow').forEach(frog => {
+    const box = frog.parentElement; let timer = null;
+    const note = () => {
+      const el = document.createElement('span'); el.className = 'note'; el.textContent = NOTES[Math.random() * 4 | 0];
+      el.style.left = frog.dataset.x + '%'; el.style.top = frog.dataset.y + '%';
+      el.style.color = getComputedStyle(frog).getPropertyValue('--c');
+      el.style.fontSize = (box.offsetWidth * (0.022 + Math.random() * 0.02)) + 'px';
+      box.appendChild(el);
+      const dx = (Math.random() - .5) * box.offsetWidth * .08, up = box.offsetWidth * (.08 + Math.random() * .06), r = (Math.random() - .5) * 60;
+      el.animate([{ transform: 'translate(-50%,-50%) scale(.3)', opacity: 0 }, { opacity: 1, offset: .2 }, { transform: `translate(calc(-50% + ${dx}px), calc(-50% - ${up}px)) rotate(${r}deg) scale(1)`, opacity: 0 }],
+        { duration: 1400 + Math.random() * 600, easing: 'cubic-bezier(.16,1,.3,1)' }).onfinish = () => el.remove();
+    };
+    const on = () => { frog.classList.add('is-on'); if (!still && !timer) { note(); timer = setInterval(note, 260); } };
+    const off = () => { frog.classList.remove('is-on'); clearInterval(timer); timer = null; };
+    frog.addEventListener('mouseenter', on); frog.addEventListener('mouseleave', off);
+    frog.addEventListener('click', () => { on(); setTimeout(off, 1600); });
   });
 
   // Team bios
