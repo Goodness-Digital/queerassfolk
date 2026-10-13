@@ -65,7 +65,7 @@ async function load() {
 }
 
 export async function onRequestGet({ request, waitUntil }) {
-  const cache = caches.default, key = new Request(new URL('/api/shows', request.url));
+  const cache = caches.default, key = new Request(new URL('/api/shows?v=2', request.url));
   const hit = await cache.match(key);
   if (hit) return hit;
   let shows = [], ok = true;
