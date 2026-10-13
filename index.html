@@ -52,7 +52,7 @@
     .skip:focus{left:8px;color:var(--cream)}
 
     /* Header */
-    .site-header{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px var(--side);pointer-events:none}
+    .site-header{position:fixed;top:0;left:0;right:0;z-index:20;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px;padding:14px var(--side);pointer-events:none}
     .site-header > *{pointer-events:auto}
     .logo{display:block;height:40px;width:160px;background-color:var(--cream);transition:background-color .6s;-webkit-mask:url('images/QAF_allfrogs_light-p-800.png') left center/contain no-repeat;mask:url('images/QAF_allfrogs_light-p-800.png') left center/contain no-repeat}
     .logo.is-dark{background-color:var(--brown)}
@@ -62,16 +62,18 @@
     .nav a:hover,.nav a[aria-current="true"]{opacity:1}
     .nav-hl{position:absolute;top:0;left:0;width:0;height:0;border:1px solid var(--brown);border-radius:8px;pointer-events:none;transition:transform .5s var(--ease),width .5s var(--ease),height .5s var(--ease)}
     .tickets-cta{font-size:13px;padding:10px 16px}
-    .header-right{display:flex;align-items:center;gap:8px}
+    .header-right{grid-column:3;justify-self:end;display:flex;align-items:center;gap:8px}
     .countdown{display:flex;align-items:center;gap:8px;background:var(--cream);color:var(--brown);text-decoration:none;border-radius:8px;padding:9px 12px;font-size:13px;font-weight:500;box-shadow:0 1px 0 #270f0314;white-space:nowrap}
     .countdown[hidden]{display:none}
     .countdown b{font-weight:600}
     .countdown i{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 #69e05f99;animation:pulse 1.8s ease-out infinite}
     @keyframes pulse{to{box-shadow:0 0 0 8px #69e05f00}}
-    @media (max-width:900px){.countdown .cd-long{display:none}}
-    @media (max-width:420px){.countdown{display:none}}
+    @media (max-width:1180px){.countdown .cd-long{display:none}}
+    @media (max-width:960px){.countdown{display:none}}
+    @media (max-width:680px){.nav a{padding:6px 8px}}
+    @media (max-width:640px){.nav ul{font-size:12px}.nav a{padding:6px 6px}.site-header{gap:8px}}
     @media (prefers-reduced-motion:reduce){.countdown i{animation:none}}
-    @media (max-width:560px){.nav{display:none}}
+    @media (max-width:599px){.nav{display:none}}
 
     /* Hero */
     .hero{position:relative;isolation:isolate;min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end;overflow:clip;color:var(--cream);background:var(--brown)}
@@ -122,9 +124,18 @@
     .ev-info p{margin:0;font-size:15px;opacity:.8}
     .event-list .btn{font-size:14px;padding:12px 18px}
     @media (max-width:520px){.event-list li{grid-template-columns:minmax(64px,auto) minmax(0,1fr)}.event-list .btn{grid-column:2;justify-self:start}}
-    .photos{list-style:none;margin:clamp(24px,4vw,56px) 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;align-items:start}
-    .photos figure{margin:0;border-radius:10px;padding:16px}
-    .photos img{display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;border-radius:4px}
+    .photos{list-style:none;margin:clamp(40px,6vw,88px) 0 0;padding:0 clamp(8px,3vw,48px) 40px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:clamp(28px,4vw,64px);align-items:start}
+    .photos li{--r:-3deg;--y:0px;--lift:0px;--s:1;--tr:-4deg;position:relative;transform:translateY(calc(var(--y) + var(--lift))) rotate(var(--r)) scale(var(--s));transition:transform .6s cubic-bezier(.3,1.7,.5,1),opacity .4s}
+    .photos li:nth-child(3n+2){--r:2.5deg;--y:40px;--tr:3deg}
+    .photos li:nth-child(3n){--r:-1.5deg;--y:12px;--tr:-2deg}
+    .photos figure{position:relative;margin:0;background:#fffaf0;padding:14px 14px 0;border-radius:2px;box-shadow:0 1px 0 #270f0318,0 22px 34px -18px #270f0380;transition:box-shadow .5s var(--ease)}
+    .photos figure::before{content:'';position:absolute;z-index:1;top:-16px;left:50%;width:42%;height:32px;transform:translateX(-50%) rotate(var(--tr));background:var(--c);opacity:.85;clip-path:polygon(0 8%,4% 0,8% 10%,12% 0,100% 0,96% 12%,100% 24%,96% 38%,100% 52%,96% 66%,100% 80%,96% 92%,100% 100%,8% 100%,4% 90%,0 100%,3% 76%,0 60%,4% 46%,0 30%)}
+    .photos img{display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;filter:contrast(1.04) saturate(.92)}
+    .photos figcaption{font-family:var(--folk);font-size:clamp(20px,1.7vw,26px);line-height:1;text-align:center;padding:16px 6px 20px}
+    .photos li:hover,.photos li:focus-within{--r:0deg;--lift:-16px;--s:1.04;z-index:2}
+    .photos li:hover figure{box-shadow:0 1px 0 #270f0318,0 40px 50px -22px #270f0399}
+    .photos.is-armed li:not(.in){--lift:-90px;--s:1.12;opacity:0;transition:none}
+    .photos.is-armed li:not(.in) figure{box-shadow:0 1px 0 #270f0318,0 80px 60px -30px #270f0333}
 
     /* Banners */
     .banners{overflow:clip;padding:clamp(40px,6vw,96px) 0;font-family:var(--folk);font-size:clamp(90px,18vw,300px);line-height:1;display:flex;flex-direction:column;align-items:center}
@@ -251,7 +262,7 @@
         <a href="https://www.outsavvy.com/calendar/4084" target="_blank" rel="noopener noreferrer">All dates on OutSavvy ↗</a>
       </div>
       <ol class="event-list">
-        <li data-start="2026-10-24T20:00:00+01:00">
+        <li>
           <div class="ev-date"><span class="ev-day">24</span><span class="ev-mon">Oct · Sat</span></div>
           <div class="ev-info">
             <h3>Live music from Calypso, Bobo Rose, Tygermylk</h3>
@@ -261,9 +272,9 @@
         </li>
       </ol>
       <ul class="photos">
-        <li><figure style="background:var(--cyan)"><img src="images/QAF-Stade-24-LL-11-p-1080.jpg" alt="A performer with a silver hollow-body guitar laughing into the microphone" loading="lazy" width="1080" height="1350"></figure></li>
-        <li><figure style="background:var(--orange)"><img src="images/24.07.05_QUEER-ASS-FOLK_ALICE-DENNY_018-p-1080.jpg" alt="The audience watching a set in a dim room at Queer Ass Folk, July 2024" loading="lazy" width="1080" height="1350"></figure></li>
-        <li><figure style="background:var(--mustard)"><img src="images/QAF-Stade-24-LL-19-p-1080.jpg" alt="A performer playing acoustic guitar in front of the Queer Ass Folk banner" loading="lazy" width="1080" height="1350"></figure></li>
+        <li style="--c:var(--cyan)"><figure><img src="images/QAF-Stade-24-LL-11-p-1080.jpg" alt="A performer with a silver hollow-body guitar laughing into the microphone" loading="lazy" width="1080" height="1350"><figcaption>The Stade, 2024</figcaption></figure></li>
+        <li style="--c:var(--orange)"><figure><img src="images/24.07.05_QUEER-ASS-FOLK_ALICE-DENNY_018-p-1080.jpg" alt="The audience watching a set in a dim room at Queer Ass Folk, July 2024" loading="lazy" width="1080" height="1350"><figcaption>July 2024</figcaption></figure></li>
+        <li style="--c:var(--mustard)"><figure><img src="images/QAF-Stade-24-LL-19-p-1080.jpg" alt="A performer playing acoustic guitar in front of the Queer Ass Folk banner" loading="lazy" width="1080" height="1350"><figcaption>Under the banner</figcaption></figure></li>
       </ul>
     </div>
   </section>
@@ -386,15 +397,27 @@
     btn.addEventListener('focus', on); btn.addEventListener('blur', off);
   });
 
-  // Countdown to the next show, read off the first upcoming row
+  // Countdown to the next show, from OutSavvy via /api/shows; stays hidden if that fails
   const cd = document.getElementById('countdown');
-  const next = [...document.querySelectorAll('.event-list li[data-start]')].map(li => new Date(li.dataset.start)).filter(d => d > Date.now() - 4 * 3600e3)[0];
-  if (next) {
-    const day = d => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  fetch('/api/shows').then(r => r.ok ? r.json() : { shows: [] }).then(({ shows }) => {
+    const show = shows.find(s => new Date(s.start) > Date.now() - 4 * 3600e3);
+    if (!show) return;
+    const next = new Date(show.start), day = d => new Date(d.getFullYear(), d.getMonth(), d.getDate());
     const n = Math.round((day(next) - day(new Date())) / 864e5);
     document.getElementById('cd-date').textContent = next.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'Europe/London' });
     document.getElementById('cd-left').textContent = n <= 0 ? 'tonight' : n === 1 ? 'tomorrow' : n + ' days';
     cd.hidden = false;
+  }).catch(() => {});
+
+  // Polaroids drop onto the wall one after another
+  const photos = document.querySelector('.photos');
+  if (!still && 'IntersectionObserver' in window) {
+    photos.classList.add('is-armed');
+    new IntersectionObserver(([en], io) => {
+      if (!en.isIntersecting) return;
+      [...photos.children].forEach((li, i) => setTimeout(() => { li.style.transition = ''; li.classList.add('in'); }, i * 180));
+      io.disconnect();
+    }, { rootMargin: '0px 0px -20% 0px' }).observe(photos);
   }
 
   // Frogs play: light up in colour, bounce, and send notes up off the instrument
@@ -526,6 +549,19 @@
   const queue = () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } };
   addEventListener('scroll', queue, { passive: true });
   addEventListener('resize', () => { queue(); moveHl(hover ?? current); });
+
+  // Links to #events land where the title has finished assembling, not mid-animation
+  const eventsY = () => {
+    const stageBottom = wos.getBoundingClientRect().bottom + scrollY;
+    const head = document.querySelector('.site-header').offsetHeight;
+    return stageBottom - 24 - wosTitle.offsetHeight - head - innerHeight * 0.1;
+  };
+  document.querySelectorAll('a[href="#events"]').forEach(a => a.addEventListener('click', e => {
+    e.preventDefault();
+    scrollTo({ top: eventsY(), behavior: still ? 'auto' : 'smooth' });
+    history.pushState(null, '', '#events');
+  }));
+  if (location.hash === '#events') addEventListener('load', () => scrollTo({ top: eventsY(), behavior: 'auto' }));
 
   const ready = () => { splitAll(); moveHl(current); onScroll(); };
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(ready); else ready();
