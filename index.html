@@ -132,7 +132,7 @@
     .photos li:nth-child(3n){--r:-1.5deg;--y:12px;--tr:-2deg}
     .photos figure{position:relative;margin:0;background:#fffaf0;padding:14px 14px 0;border-radius:2px;box-shadow:0 1px 0 #270f0318,0 22px 34px -18px #270f0380;transition:box-shadow .5s var(--ease)}
     .photos figure::before{content:'';position:absolute;z-index:1;top:-16px;left:50%;width:42%;height:32px;transform:translateX(-50%) rotate(var(--tr));background:var(--c);opacity:.85;clip-path:polygon(0 8%,4% 0,8% 10%,12% 0,100% 0,96% 12%,100% 24%,96% 38%,100% 52%,96% 66%,100% 80%,96% 92%,100% 100%,8% 100%,4% 90%,0 100%,3% 76%,0 60%,4% 46%,0 30%)}
-    .photos img{display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;filter:contrast(1.04) saturate(.92)}
+    .photos img{display:block;width:100%;height:auto;filter:contrast(1.04) saturate(.92)}
     .photos figcaption{font-family:var(--folk);font-size:clamp(20px,1.7vw,26px);line-height:1;text-align:center;padding:16px 6px 20px}
     .photos li:hover,.photos li:focus-within{--r:0deg;--lift:-16px;--s:1.04;z-index:2}
     .photos li:hover figure{box-shadow:0 1px 0 #270f0318,0 40px 50px -22px #270f0399}
@@ -161,7 +161,7 @@
     .team h2{font-size:clamp(32px,3.5vw,52px)}
     .team ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:16px;align-items:start}
     .member{border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:18px}
-    .member img{display:block;width:100%;height:auto;aspect-ratio:3/2;object-fit:cover;border-radius:4px}
+    .member img{display:block;width:100%;height:auto;border-radius:4px}
     .member-body{padding:0 8px 8px;display:flex;flex-direction:column;gap:10px}
     .member-name{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px}
     .member-name h3{margin:0;font-family:var(--anton);font-weight:400;text-transform:uppercase;font-size:clamp(24px,2.2vw,32px);line-height:1}
@@ -241,12 +241,11 @@
     <div class="hero-lift" aria-hidden="true"></div>
     <div class="hero-shade"></div>
     <div class="hero-body">
-      <h1 data-gd-none data-gd-why="An animated title. Leave a comment and Goodness will change it" data-split="hero">Amplifying queer voices, fostering community.</h1>
+      <h1 data-gd-none data-gd-why="An animated title. Leave a comment and Goodness will change it" data-split="hero">Amplifying queer voices, building community.</h1>
       <div class="hero-row">
         <p data-gd="gae68d4f">A community-led LGBTQ+ live music night born in Hastings, championing queer joy, accessibility and connection.</p>
         <div data-gd="g9afc9b9" class="hero-ctas">
           <a class="btn btn-green" href="#events" data-hero-cta="#69e05f">Come to a show</a>
-          <a class="btn btn-ghost" data-hero-cta="#ff812d" href="https://docs.google.com/forms/d/e/1FAIpQLSdDqVOt-S6RNrQvQUo3g_4Q8mkBtbGZq19Ur3qYIcwAIMusNA/viewform" target="_blank" rel="noopener noreferrer">Apply to play</a>
         </div>
       </div>
     </div>
@@ -266,9 +265,9 @@
       <ol class="event-list" id="event-list" aria-live="polite"></ol>
       <p data-gd="ge0c6853" class="ev-empty" id="ev-empty" hidden>New dates are on their way. <a href="https://www.outsavvy.com/calendar/4084" target="_blank" rel="noopener noreferrer">Check OutSavvy</a> for the latest.</p>
       <ul class="photos">
-        <li style="--c:var(--cyan)"><figure><img data-gd="gf2fc6c3" src="images/QAF-Stade-24-LL-11-p-1080.jpg" alt="A performer with a silver hollow-body guitar laughing into the microphone" loading="lazy" width="1080" height="1350"><figcaption data-gd="g4bf97fb">The Stade, 2024</figcaption></figure></li>
-        <li style="--c:var(--orange)"><figure><img data-gd="gb47e1dd" src="images/24.07.05_QUEER-ASS-FOLK_ALICE-DENNY_018-p-1080.jpg" alt="The audience watching a set in a dim room at Queer Ass Folk, July 2024" loading="lazy" width="1080" height="1350"><figcaption data-gd="gc9314af">July 2024</figcaption></figure></li>
-        <li style="--c:var(--mustard)"><figure><img data-gd="g9669968" src="images/QAF-Stade-24-LL-19-p-1080.jpg" alt="A performer playing acoustic guitar in front of the Queer Ass Folk banner" loading="lazy" width="1080" height="1350"><figcaption data-gd="g18619d9">Under the banner</figcaption></figure></li>
+        <li style="--c:var(--cyan)"><figure><img data-gd="gf2fc6c3" src="images/QAF-Stade-24-LL-11-p-1080.jpg" alt="A performer with a silver hollow-body guitar laughing into the microphone" loading="lazy" width="1080" height="1618"><figcaption data-gd="g4bf97fb">The Stade, 2024</figcaption></figure></li>
+        <li style="--c:var(--orange)"><figure><img data-gd="gb47e1dd" src="images/24.07.05_QUEER-ASS-FOLK_ALICE-DENNY_018-p-1080.jpg" alt="The audience watching a set in a dim room at Queer Ass Folk, July 2024" loading="lazy" width="1080" height="720"><figcaption data-gd="gc9314af">July 2024</figcaption></figure></li>
+        <li style="--c:var(--mustard)"><figure><img data-gd="g9669968" src="images/QAF-Stade-24-LL-19-p-1080.jpg" alt="A performer playing acoustic guitar in front of the Queer Ass Folk banner" loading="lazy" width="1080" height="1617"><figcaption data-gd="g18619d9">Under the banner</figcaption></figure></li>
       </ul>
     </div>
   </section>
@@ -338,6 +337,7 @@
         <a data-gd="g82bfb96" class="mail" href="mailto:queerassfolkmusic@gmail.com">queerassfolkmusic@gmail.com</a>
       </div>
       <ul class="pills">
+        <li data-gd="g0b96d19"><a href="https://qaf.subscribepage.io" target="_blank" rel="noopener noreferrer">Join our mailing list ↗</a></li>
         <li data-gd="ga4dfeba"><a href="https://www.instagram.com/queerassfolkmusic/" target="_blank" rel="noopener noreferrer">Instagram ↗</a></li>
         <li data-gd="g6c5ea80"><a href="https://drive.google.com/drive/folders/1FuZu6qhzVQH_gHqKHHOGjCw7GQgPflWI" target="_blank" rel="noopener noreferrer">Press kit ↗</a></li>
       </ul>
