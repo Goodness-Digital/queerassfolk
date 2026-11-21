@@ -211,7 +211,12 @@
     .sw{display:inline-block;white-space:nowrap}
     .sc{display:inline-block;overflow:clip;vertical-align:top;padding:.15em 0 .1em;margin:-.15em 0 -.05em}
     .sc > span{display:inline-block}
+    /* The hero title waits hidden for its drop-in, so the plain text never flashes first. If the script never gets there it shows anyway. */
+    .split-on [data-split=hero]{visibility:hidden;animation:split-fallback 0s 3s forwards}
+    .split-on [data-split=hero].is-split{visibility:visible;animation:none}
+    @keyframes split-fallback{to{visibility:visible}}
   </style>
+  <script>if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('split-on');</script>
 </head>
 <body>
 <a data-gd="g2e3dcce" class="skip" href="#main">Skip to content</a>
@@ -475,6 +480,7 @@
   const dly = Array.from({ length: 9 }, () => Math.random() * 0.25);
 
   // Split-text reveals
+  const fontsIn = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
   function splitAll() {
     document.querySelectorAll('[data-split]').forEach(el => {
       const text = el.textContent.trim();
@@ -500,7 +506,13 @@
         c.style.transition = `transform 1.2s ${E} ${d}s`; c.style.transform = 'translateY(0)';
       });
       hide();
-      if (hero) { requestAnimationFrame(() => requestAnimationFrame(show)); return; }
+      if (hero) {
+        el.classList.add('is-split');
+        // Start once the title font is in, or after a second regardless: some browsers hold fonts.ready until the page scrolls.
+        void el.offsetWidth;
+        Promise.race([fontsIn, new Promise(r => setTimeout(r, 1000))]).then(show);
+        return;
+      }
       // Once a title has come on screen it stays: reveal once, then stop watching.
       new IntersectionObserver(([en], io) => {
         if (!en.isIntersecting) return;
@@ -581,8 +593,10 @@
   }));
   if (location.hash === '#events') addEventListener('load', () => scrollTo({ top: eventsY(), behavior: 'auto' }));
 
-  const ready = () => { splitAll(); moveHl(current); onScroll(); };
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(ready); else ready();
+  splitAll();
+  const ready = () => { moveHl(current); onScroll(); };
+  Promise.race([fontsIn, new Promise(r => setTimeout(r, 1000))]).then(ready);
+  fontsIn.then(ready);
   onScroll();
 })();
 </script>
