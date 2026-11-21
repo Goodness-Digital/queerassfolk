@@ -161,7 +161,7 @@
     .team h2{font-size:clamp(32px,3.5vw,52px)}
     .team ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:16px;align-items:start}
     .member{border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:18px}
-    .member img{display:block;width:100%;height:auto;border-radius:4px}
+    .member img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;object-position:50% 30%;border-radius:4px}
     .member-body{padding:0 8px 8px;display:flex;flex-direction:column;gap:10px}
     .member-name{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px}
     .member-name h3{margin:0;font-family:var(--anton);font-weight:400;text-transform:uppercase;font-size:clamp(24px,2.2vw,32px);line-height:1}
@@ -501,9 +501,10 @@
       });
       hide();
       if (hero) { requestAnimationFrame(() => requestAnimationFrame(show)); return; }
-      new IntersectionObserver(([en]) => {
-        if (en.isIntersecting) show();
-        else if (en.boundingClientRect.top > innerHeight * 0.5) hide();
+      // Once a title has come on screen it stays: reveal once, then stop watching.
+      new IntersectionObserver(([en], io) => {
+        if (!en.isIntersecting) return;
+        show(); io.disconnect();
       }, { rootMargin: '0px 0px -50% 0px' }).observe(el.closest('section,footer') || el);
     });
   }
